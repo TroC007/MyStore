@@ -61,17 +61,16 @@ public class MyStoreLoginSteps {
         createNewAddress.click();
     }
 
-    @And("I type new data")
-    public void iTypeNewData() {
-        System.out.println("CZY DANE W DODANYM ADRESIE SĄ POPRAWNE?");
+    @And("I type new data {string} {string} {string} {string}")
+    public void iTypeNewData(String alias, String address, String city, String postal) {
         WebElement typeAlias = driver.findElement(By.cssSelector("#field-alias"));
-        typeAlias.sendKeys("Spokojny");
+        typeAlias.sendKeys(alias);
         WebElement typeAddress = driver.findElement(By.cssSelector("#field-address1"));
-        typeAddress.sendKeys("Wieczna 5");
+        typeAddress.sendKeys(address);
         WebElement typeCity = driver.findElement(By.cssSelector("#field-city"));
-        typeCity.sendKeys("Wieliczka");
+        typeCity.sendKeys(city);
         WebElement typePostal = driver.findElement(By.cssSelector("#field-postcode"));
-        typePostal.sendKeys("32-998");
+        typePostal.sendKeys(postal);
         WebElement saveData = driver.findElement(By.cssSelector("#content > div > div > form > footer > button"));
         saveData.click();
     }
@@ -82,6 +81,7 @@ public class MyStoreLoginSteps {
         String address = "Wieczna 5";
         String city = "Wieliczka";
         String postal = "32-998";
+        System.out.println("CZY DANE W DODANYM ADRESIE SĄ POPRAWNE?");
         verifyData(alias);
         verifyData(address);
         verifyData(city);
