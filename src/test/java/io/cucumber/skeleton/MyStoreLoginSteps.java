@@ -10,8 +10,9 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+
+import java.util.List;
 
 public class MyStoreLoginSteps {
 
@@ -25,7 +26,7 @@ public class MyStoreLoginSteps {
         wait = new WebDriverWait(driver, 3);
     }
 
-    //    @After
+        @After
     public void closeBrowser() {
         driver.quit();
     }
@@ -62,6 +63,7 @@ public class MyStoreLoginSteps {
 
     @And("I type new data")
     public void iTypeNewData() {
+        System.out.println("CZY DANE W DODANYM ADRESIE SĄ POPRAWNE?");
         WebElement typeAlias = driver.findElement(By.cssSelector("#field-alias"));
         typeAlias.sendKeys("Spokojny");
         WebElement typeAddress = driver.findElement(By.cssSelector("#field-address1"));
@@ -95,13 +97,46 @@ public class MyStoreLoginSteps {
 
     @When("I delete address")
     public void iDeleteAddress() {
-        wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id='address-10113']/div[2]/a[2]")));
-        WebElement deleteAddress = driver.findElement(By.xpath("//*[@id='address-10113']/div[2]/a[2]"));
-        deleteAddress.click();
+        //nie poradziłem sobie tym sposobem
+//        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector("a[data-link-action='delete-address']")));
+//        WebElement deleteAddress = driver.findElement(By.cssSelector("a[data-link-action='delete-address']"));
+//        deleteAddress.click();
+// Znajdź wszystkie adresy na stronie
+        List<WebElement> addresses = driver.findElements(By.cssSelector("article.address"));
+
+        //to jest sposób dzięki chatGPT
+// Sprawdź, czy lista nie jest pusta
+        if (!addresses.isEmpty()) {
+            // Znajdź ostatni adres na liście
+            WebElement lastAddress = addresses.get(addresses.size() - 1);
+
+            // Znajdź przycisk "Delete" dla ostatniego adresu
+            WebElement deleteButton = lastAddress.findElement(By.cssSelector("a[data-link-action='delete-address']"));
+
+            // Kliknij przycisk "Delete"
+            deleteButton.click();
+        } else {
+            System.out.println("Nie znaleziono żadnych adresów.");
+        }
 
     }
 
     @And("I verify deleting")
     public void iVerifyDeleting() {
+        String alias = "Spokojny";
+        String address = "Wieczna 5";
+        String city = "Wieliczka";
+        String postal = "32-998";
+        try {
+            verifyData(alias);
+            verifyData(address);
+            verifyData(city);
+            verifyData(postal);
+        } catch (AssertionError a) {
+            System.out.println("POWYŻSZY ADRES ZOSTAŁ USUNIĘTY");
+
+        }
+
+
     }
 }
